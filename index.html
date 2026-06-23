@@ -55,7 +55,7 @@
         /* 1. CONTADOR FLOTANTE (Sobre sección 2) */
         .contador-flotante {
             position: absolute;
-            bottom: 22%; 
+            bottom: 12%; 
             left: 50%; 
             transform: translateX(-50%); 
             width: 65%; 
@@ -115,4 +115,123 @@
 <body>
 
     <audio id="musica-fondo" loop playsinline>
-        <source src="musica.mp3"
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="btn-musica-flotante" id="control-musica" onclick="alternarMusica()">
+        🎵
+    </div>
+
+    <div class="canvas-celular">
+        
+        <div class="seccion">
+            <video autoplay loop muted playsinline>
+                <source src="portada.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="seccion">
+            <img src="02_invitacion.png" alt="Detalles de Invitación" onerror="this.src='02_invitacion.jpg'">
+            <div id="countdown" class="contador-flotante">
+                <div class="time-box"><span id="days">00</span><label>Días</label></div>
+                <div class="time-box"><span id="hours">00</span><label>Horas</label></div>
+                <div class="time-box"><span id="minutes">00</span><label>Min</label></div>
+                <div class="time-box"><span id="seconds">00</span><label>Seg</label></div>
+            </div>
+        </div>
+
+        <div class="seccion">
+            <img src="03_invitadosDeHonor.png" alt="Invitados" onerror="this.src='03_invitadosDeHonor.jpg'">
+        </div>
+
+        <div class="seccion">
+            <img src="04_programa.png" alt="Programa" onerror="this.src='04_programa.jpg'">
+        </div>
+
+        <div class="seccion">
+            <img src="05_recepcion.png" alt="Recepción" onerror="this.src='05_recepcion.jpg'">
+        </div>
+
+        <div class="seccion">
+            <img src="06_fechas.png" alt="Fechas" onerror="this.src='06_fechas.jpg'">
+        </div>
+
+        <div class="seccion">
+            <img src="07_alumnos.png" alt="Diseño Final" onerror="this.src='07_alumnos.jpg'">
+        </div>
+
+    </div>
+
+    <script>
+        // CANDADO 3: Bloqueo global de clic derecho
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // =========================================
+        // GESTIÓN DEL AUDIO INTERACTIVO (COMPATIBLE CON iOS Y ANDROID)
+        // =========================================
+        const musica = document.getElementById("musica-fondo");
+        const botonMusica = document.getElementById("control-musica");
+        let audioIniciado = false;
+
+        function iniciarAudio() {
+            if (audioIniciado) return; // Evita que intente arrancar cada vez que tocas la pantalla
+            
+            musica.play().then(() => {
+                botonMusica.innerHTML = "🎵";
+                audioIniciado = true;
+                // Una vez encendido, dejamos de escuchar los toques de fondo
+                document.body.removeEventListener('click', iniciarAudio);
+                document.body.removeEventListener('touchstart', iniciarAudio);
+            }).catch(error => {
+                console.log("Esperando toque del usuario para iniciar música.");
+                botonMusica.innerHTML = "🔇";
+            });
+        }
+
+        // Activadores de audio globales
+        document.body.addEventListener('click', iniciarAudio);
+        document.body.addEventListener('touchstart', iniciarAudio);
+
+        // Control manual del botón flotante
+        function alternarMusica() {
+            if (musica.paused) {
+                musica.play();
+                botonMusica.innerHTML = "🎵";
+                audioIniciado = true;
+            } else {
+                musica.pause();
+                botonMusica.innerHTML = "🔇";
+            }
+        }
+
+        // =========================================
+        // EL CONTADOR: FORMATO NUMÉRICO UNIVERSAL (AÑO, MES, DÍA, HORA, MINUTO, SEGUNDO)
+        // NOTA: En Javascript, Julio es el mes 6 (Enero es 0).
+        // =========================================
+        const targetDate = new Date(2026, 6, 15, 10, 0, 0).getTime();
+        
+        const updateCountdown = setInterval(() => {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Verificamos matemáticamente que no sea NaN (Not a Number) antes de imprimir
+            if (!isNaN(difference)) {
+                document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+                document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+                document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+                document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+            }
+
+            if (difference < 0) {
+                clearInterval(updateCountdown);
+                document.getElementById("countdown").innerHTML = "<p style='color:#042a67; font-weight:bold; font-size: 1.1rem; width:100%; text-align:center;'>¡HOY ES EL GRAN DÍA!</p>";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

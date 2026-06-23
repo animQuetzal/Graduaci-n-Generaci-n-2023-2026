@@ -156,8 +156,8 @@
             <img src="06_fechas.png" alt="Fechas" onerror="this.src='06_fechas.jpg'">
         </div>
 
-            <div class="seccion">
-            <img src="07_alumnos.png" alt="alumnos" onerror="this.src='07_alumnos.jpg'">
+        <div class="seccion">
+            <img src="07_alumnos.png" alt="Diseño Final" onerror="this.src='07_alumnos.jpg'">
         </div>
 
     </div>
@@ -192,31 +192,3 @@
                 botonMusica.innerHTML = "🎵";
             } else {
                 musica.pause();
-                botonMusica.innerHTML = "🔇";
-            }
-        }
-
-        // EL CONTADOR (15 DE JULIO A LAS 10:00 AM)
-        const targetDate = new Date("July 15, 2026 10:00:00").getTime();
-        const updateCountdown = setInterval(() => {
-            const now = new Date().getTime();
-            const difference = targetDate - now;
-
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-
-            if (difference < 0) {
-                clearInterval(updateCountdown);
-                document.getElementById("countdown").innerHTML = "<p style='color:#042a67; font-weight:bold; font-size: 1.1rem; width:100%; text-align:center;'>¡HOY ES EL GRAN DÍA!</p>";
-            }
-        }, 1000);
-    </script>
-</body>
-</html>

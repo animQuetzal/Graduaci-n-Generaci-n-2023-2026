@@ -19,7 +19,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* CANDADO 1: Evita selección de texto accidental */
             -webkit-user-select: none;
             user-select: none;
         }
@@ -48,11 +47,10 @@
             padding: 0;
             display: block;
             border: none;
-            /* CANDADO 2: Bloquea el "Guardar imagen" táctil */
             pointer-events: none;
         }
 
-        /* 1. CONTADOR FLOTANTE (Sobre sección 2) */
+        /* 1. CONTADOR FLOTANTE */
         .contador-flotante {
             position: absolute;
             bottom: 12%; 
@@ -131,7 +129,7 @@
         </div>
 
         <div class="seccion">
-            <img src="02_invitacion.png" alt="Detalles de Invitación" onerror="this.src='02_invitacion.jpg'">
+            <img src="02_invitacion.png" alt="Detalles de Invitación" onerror="this.onerror=null; this.src='02_invitacion.jpg'">
             <div id="countdown" class="contador-flotante">
                 <div class="time-box"><span id="days">00</span><label>Días</label></div>
                 <div class="time-box"><span id="hours">00</span><label>Horas</label></div>
@@ -141,11 +139,11 @@
         </div>
 
         <div class="seccion">
-            <img src="03_invitadosDeHonor.png" alt="Invitados" onerror="this.src='03_invitadosDeHonor.jpg'">
+            <img src="03_invitadosDeHonor.png" alt="Invitados" onerror="this.onerror=null; this.src='03_invitadosDeHonor.jpg'">
         </div>
 
         <div class="seccion">
-            <img src="04_programa.png" alt="Programa" onerror="this.src='04_programa.jpg'">
+            <img src="04_programa.png" alt="Programa" onerror="this.onerror=null; this.src='04_programa.jpg'">
         </div>
 
         <div class="seccion">
@@ -153,46 +151,41 @@
         </div>
 
         <div class="seccion">
-            <img src="06_fechas.png" alt="Fechas" onerror="this.src='06_fechas.jpg'">
+            <img src="06_fechas.png" alt="Fechas" onerror="this.onerror=null; this.src='06_fechas.jpg'">
         </div>
 
         <div class="seccion">
-            <img src="07_alumnos.png" alt="Diseño Final" onerror="this.src='07_alumnos.jpg'">
+            <img src="07_alumnos.png" alt="Diseño Final" onerror="this.onerror=null; this.src='07_alumnos.jpg'">
         </div>
 
     </div>
 
     <script>
-        // CANDADO 3: Bloqueo global de clic derecho
+        // Bloqueo de clic derecho
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // =========================================
-        // GESTIÓN DEL AUDIO INTERACTIVO (COMPATIBLE CON iOS Y ANDROID)
-        // =========================================
+        // GESTIÓN DEL AUDIO INTERACTIVO
         const musica = document.getElementById("musica-fondo");
         const botonMusica = document.getElementById("control-musica");
         let audioIniciado = false;
 
         function iniciarAudio() {
-            if (audioIniciado) return; // Evita que intente arrancar cada vez que tocas la pantalla
+            if (audioIniciado) return; 
             
             musica.play().then(() => {
                 botonMusica.innerHTML = "🎵";
                 audioIniciado = true;
-                // Una vez encendido, dejamos de escuchar los toques de fondo
                 document.body.removeEventListener('click', iniciarAudio);
                 document.body.removeEventListener('touchstart', iniciarAudio);
             }).catch(error => {
-                console.log("Esperando toque del usuario para iniciar música.");
+                console.log("Esperando interacción para reproducir.");
                 botonMusica.innerHTML = "🔇";
             });
         }
 
-        // Activadores de audio globales
         document.body.addEventListener('click', iniciarAudio);
         document.body.addEventListener('touchstart', iniciarAudio);
 
-        // Control manual del botón flotante
         function alternarMusica() {
             if (musica.paused) {
                 musica.play();
@@ -204,10 +197,8 @@
             }
         }
 
-        // =========================================
-        // EL CONTADOR: FORMATO NUMÉRICO UNIVERSAL (AÑO, MES, DÍA, HORA, MINUTO, SEGUNDO)
-        // NOTA: En Javascript, Julio es el mes 6 (Enero es 0).
-        // =========================================
+        // EL CONTADOR: FORMATO MATRICIAL COMPATIBLE CON TODO MÓVIL
+        // (Año, Mes [Julio es 6], Día, Hora, Minuto, Segundo)
         const targetDate = new Date(2026, 6, 15, 10, 0, 0).getTime();
         
         const updateCountdown = setInterval(() => {
@@ -219,7 +210,6 @@
             const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-            // Verificamos matemáticamente que no sea NaN (Not a Number) antes de imprimir
             if (!isNaN(difference)) {
                 document.getElementById("days").innerText = days < 10 ? "0" + days : days;
                 document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;

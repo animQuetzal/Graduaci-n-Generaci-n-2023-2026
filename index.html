@@ -166,25 +166,26 @@
         // CANDADO 3: Bloqueo global de clic derecho
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // GESTIÓN DEL AUDIO INTERACTIVO
+      // GESTIÓN DEL AUDIO INTERACTIVO
         const musica = document.getElementById("musica-fondo");
         const botonMusica = document.getElementById("control-musica");
 
         function iniciarAudio() {
             musica.play().then(() => {
                 botonMusica.innerHTML = "🎵";
+                // Quitamos los escuchadores para evitar reiniciar el audio
                 document.removeEventListener('click', iniciarAudio);
                 document.removeEventListener('touchstart', iniciarAudio);
-                window.removeEventListener('scroll', iniciarAudio);
             }).catch(error => {
-                console.log("Autoplay bloqueado por el navegador, esperando activación manual.");
+                console.log("Autoplay bloqueado por el navegador.");
                 botonMusica.innerHTML = "🔇";
             });
         }
 
+        // CORRECCIÓN MÓVIL: Eliminamos 'scroll' porque Safari lo bloquea. 
+        // El usuario solo debe dar un toque en cualquier parte de la pantalla para activar el audio.
         document.addEventListener('click', iniciarAudio);
         document.addEventListener('touchstart', iniciarAudio);
-        window.addEventListener('scroll', iniciarAudio);
 
         function alternarMusica() {
             if (musica.paused) {
@@ -192,3 +193,34 @@
                 botonMusica.innerHTML = "🎵";
             } else {
                 musica.pause();
+                botonMusica.innerHTML = "🔇";
+            }
+        }
+
+        // CORRECCIÓN MÓVIL DEL CONTADOR: Formato ISO ultra compatible (Año-Mes-DíaTHora)
+        // Antes: "July 15, 2026 10:00:00" -> Ahora: "2026-07-15T10:00:00"
+        const targetDate = new Date("2026-07-15T10:00:00").getTime();
+        
+        const updateCountdown = setInterval(() => {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Si la fecha es válida, actualiza los números
+            if (!isNaN(difference)) {
+                document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+                document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+                document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+                document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+            }
+
+            if (difference < 0) {
+                clearInterval(updateCountdown);
+                document.getElementById("countdown").innerHTML = "<p style='color:#042a67; font-weight:bold; font-size: 1.1rem; width:100%; text-align:center;'>¡HOY ES EL GRAN DÍA!</p>";
+            }
+        }, 1000);
+    </script>
